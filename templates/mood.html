@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container">
+
+    <!-- Page Title -->
+    <div class="text-center mb-4">
+        <h2>Mood Tracker 😊</h2>
+        <p class="text-muted">Track your daily emotions and monitor your mental wellness.</p>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Mood Form -->
+    <div class="card shadow-sm p-4 mb-4">
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label class="form-label"><b>Select Your Mood</b></label>
+                <select name="mood" class="form-select" required>
+                    <option value="">-- Choose Mood --</option>
+                    <option value="Happy">Happy 😊</option>
+                    <option value="Calm">Calm 😌</option>
+                    <option value="Stressed">Stressed 😓</option>
+                    <option value="Anxious">Anxious 😟</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label"><b>Optional Note</b></label>
+                <textarea name="note" class="form-control" rows="3"
+                          placeholder="Write how you feel..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-warning w-100">
+                Save Mood
+            </button>
+        </form>
+    </div>
+
+    <!-- Analytics Section -->
+    <h4 class="mb-3">Mood Summary 📊</h4>
+
+    <div class="row text-center mb-4">
+
+        <div class="col-md-3">
+            <div class="card p-3 shadow-sm">
+                <h5>😊 Happy</h5>
+                <h3 class="text-success">{{ happy_count }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3 shadow-sm">
+                <h5>😌 Calm</h5>
+                <h3 class="text-info">{{ calm_count }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3 shadow-sm">
+                <h5>😓 Stressed</h5>
+                <h3 class="text-warning">{{ stressed_count }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3 shadow-sm">
+                <h5>😟 Anxious</h5>
+                <h3 class="text-danger">{{ anxious_count }}</h3>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Mood History Table -->
+    <h4>Your Mood History 📅</h4>
+
+    <table class="table table-bordered mt-3">
+        <thead class="table-light">
+            <tr>
+                <th>Date</th>
+                <th>Mood</th>
+                <th>Note</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mood in user_moods %}
+            <tr>
+                <td>{{ mood.date }}</td>
+
+                <td>
+                    {% if mood.mood == "Happy" %}
+                        <span class="badge bg-success">Happy 😊</span>
+                    {% elif mood.mood == "Calm" %}
+                        <span class="badge bg-info">Calm 😌</span>
+                    {% elif mood.mood == "Stressed" %}
+                        <span class="badge bg-warning text-dark">Stressed 😓</span>
+                    {% else %}
+                        <span class="badge bg-danger">Anxious 😟</span>
+                    {% endif %}
+                </td>
+
+                <td>{{ mood.note }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3" class="text-center text-muted">
+                    No mood records yet.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}

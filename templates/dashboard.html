@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container">
+
+    <!-- Welcome Section -->
+    <div class="text-center mb-4">
+        <h2>Welcome, {{ user.username }} 🌼</h2>
+        <p class="text-muted">
+            Take a deep breath and continue your wellness journey today.
+        </p>
+    </div>
+
+    <!-- Dashboard Cards -->
+    <div class="row g-4">
+
+        <!-- Yoga Card -->
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center p-3 h-100">
+                <h5>🧘 Yoga Sessions</h5>
+                <h3 class="text-success">{{ yoga_count }}</h3>
+                <p class="text-muted">Available Sessions</p>
+                <a href="{% url 'yoga' %}" class="btn btn-success btn-sm">
+                    Explore Yoga
+                </a>
+            </div>
+        </div>
+
+        <!-- Meditation Card -->
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center p-3 h-100">
+                <h5>🧘‍♂️ Meditation</h5>
+                <h3 class="text-primary">{{ meditation_count }}</h3>
+                <p class="text-muted">Guided Sessions</p>
+                <a href="{% url 'meditation' %}" class="btn btn-primary btn-sm">
+                    Start Meditation
+                </a>
+            </div>
+        </div>
+
+        <!-- Mood Tracker Card -->
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center p-3 h-100">
+                <h5>😊 Mood Tracker</h5>
+                <h3 class="text-warning">{{ mood_count }}</h3>
+                <p class="text-muted">Mood Logs</p>
+                <a href="{% url 'mood' %}" class="btn btn-warning btn-sm">
+                    Log Mood
+                </a>
+            </div>
+        </div>
+
+        <!-- Latest Mood Card -->
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center p-3 h-100">
+                <h5>📊 Latest Mood</h5>
+
+                {% if latest_mood %}
+                    <h4 class="text-info">{{ latest_mood.mood }}</h4>
+                    <small class="text-muted">
+                        {{ latest_mood.note }}
+                    </small>
+                {% else %}
+                    <p class="text-muted">
+                        No mood recorded yet.
+                    </p>
+                {% endif %}
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

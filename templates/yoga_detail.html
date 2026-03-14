@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container text-center">
+
+    <h2>{{ yoga.title }} 🧘</h2>
+
+    {% if yoga.image %}
+        <img src="{{ yoga.image.url }}" 
+             class="img-fluid mt-3"
+             style="max-height:300px;">
+    {% endif %}
+
+    <p class="mt-3">{{ yoga.description }}</p>
+    <p><b>Duration:</b> {{ yoga.duration }} minutes</p>
+
+    <!-- CIRCULAR TIMER -->
+    <div class="d-flex justify-content-center mt-4">
+        <svg width="200" height="200">
+            <circle cx="100" cy="100" r="90"
+                stroke="#e6e6e6"
+                stroke-width="10"
+                fill="none"/>
+            <circle id="progressCircle"
+                cx="100"
+                cy="100"
+                r="90"
+                stroke="#28a745"
+                stroke-width="10"
+                fill="none"
+                stroke-dasharray="565"
+                stroke-dashoffset="0"
+                transform="rotate(-90 100 100)"/>
+        </svg>
+    </div>
+
+    <h2 id="timer" class="mt-3 text-success"></h2>
+
+    <!-- PROGRESS BAR -->
+    <div class="progress mt-3" style="height:20px;">
+        <div id="progressBar" 
+             class="progress-bar bg-success" 
+             role="progressbar" 
+             style="width:0%">
+        </div>
+    </div>
+
+    <!-- CONTROL BUTTONS -->
+    <div class="mt-4">
+        <button class="btn btn-success" onclick="startTimer()">Start</button>
+        <button class="btn btn-warning" onclick="pauseTimer()">Pause</button>
+        <button class="btn btn-danger" onclick="resetTimer()">Reset</button>
+    </div>
+
+    <a href="{% url 'dashboard' %}" class="btn btn-primary mt-4">
+        Finish Session
+    </a>
+
+</div>
+
+<script>
+let totalTime = {{ yoga.duration }} * 60;
+let timeLeft = totalTime;
+let timerInterval = null;
+
+const timerDisplay = document.getElementById("timer");
+const progressBar = document.getElementById("progressBar");
+const circle = document.getElementById("progressCircle");
+const circumference = 2 * Math.PI * 90;
+
+circle.style.strokeDasharray = circumference;
+
+function updateDisplay() {
+    let minutes = Math.floor(timeLeft / 60);
+    let seconds = timeLeft % 60;
+
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    seconds = seconds < 10 ? "0" + seconds : seconds;
+
+    timerDisplay.textContent = minutes + ":" + seconds;
+
+    let progressPercent = ((totalTime - timeLeft) / totalTime) * 100;
+    progressBar.style.width = progressPercent + "%";
+
+    let offset = circumference - (progressPercent / 100) * circumference;
+    circle.style.strokeDashoffset = offset;
+}
+
+function startTimer() {
+    if (timerInterval) return;
+
+    timerInterval = setInterval(() => {
+        if (timeLeft > 0) {
+            timeLeft--;
+            updateDisplay();
+        } else {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            alert("Session Complete 🎉 Well Done!");
+        }
+    }, 1000);
+}
+
+function pauseTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+}
+
+function resetTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    timeLeft = totalTime;
+    updateDisplay();
+}
+
+updateDisplay();
+</script>
+
+{% endblock %}
